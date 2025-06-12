@@ -1,0 +1,205 @@
+/* Classic Glassy Galaxy Theme */
+body {
+  font-family: 'Orbitron', 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #e0e0ff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: transparent;
+  position: relative;
+}
+
+/* Cosmic Video Background (Bottom Layer) */
+.galaxy-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -3;
+  overflow: hidden;
+}
+
+.galaxy-video video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7) contrast(1.1) saturate(1.2);
+}
+
+/* Glass Overlay (Middle Layer) */
+.glass-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 5, 30, 0.7) 0%,
+    rgba(40, 20, 80, 0.75) 100%
+  );
+  z-index: -2;
+  backdrop-filter: blur(5px);
+}
+
+/* Content (Top Layer) */
+header {
+  background: rgba(30, 15, 60, 0.35);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, #e0e0ff, #b388ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 15px rgba(179, 136, 255, 0.4);
+}
+
+/* Hero Section */
+.hero {
+  background: rgba(30, 15, 60, 0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 0 20px rgba(179, 136, 255, 0.15);
+  padding: 3rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 15px rgba(179, 136, 255, 0.6);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #e0e0ff;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+}
+
+/* Glassy Button */
+.shop-now-btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, #7b2cbf 0%, #9d4edd 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(123, 44, 191, 0.5);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.shop-now-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(157, 78, 221, 0.7);
+  background: linear-gradient(135deg, #8a35d1 0%, #a95cf0 100%);
+}
+
+.shop-now-btn:active {
+  transform: translateY(1px);
+}
+
+.shop-now-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+.shop-now-btn:hover::after {
+  left: 100%;
+}
+
+/* Content Sections */
+.content-section {
+  background: rgba(20, 10, 40, 0.35);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+.content-section h2 {
+  color: #b388ff;
+  font-size: 2rem;
+  margin-top: 0;
+  border-bottom: 1px solid rgba(179, 136, 255, 0.4);
+  padding-bottom: 0.5rem;
+}
+
+.content-section p {
+  color: #e0e0ff;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+footer {
+  background: rgba(20, 10, 40, 0.5);
+  backdrop-filter: blur(12px);
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  
+  .hero, .content-section {
+    padding: 1.5rem;
+    margin: 1.5rem;
+  }
+  
+  .shop-now-btn {
+    padding: 0.8rem 1.8rem;
+    font-size: 1rem;
+  }
+  
+  .glass-overlay {
+    backdrop-filter: blur(4px);
+  }
+}

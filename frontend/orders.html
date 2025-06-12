@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Cards</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #background-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay for better readability */
+    }
+
+    .scene {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .board {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px); /* Adds a nice blur effect over the video */
+    }
+
+    .card {
+      width: 240px;
+      height: 340px;
+      position: relative;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card.is-flipped {
+      transform: rotateY(180deg) translateY(-10px);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(145deg, #ffffff, #f5f5f5);
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      color: #333;
+      transform: rotateY(180deg);
+      justify-content: space-between;
+    }
+
+    .card-back {
+      background: linear-gradient(145deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .order-header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .order-title {
+      font-weight: bold;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .order-id {
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 5px 15px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    .order-details {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .detail-row {
+      display: flex;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .detail-label {
+      font-weight: bold;
+      min-width: 80px;
+      margin-right: 10px;
+    }
+
+    .detail-value {
+      flex-grow: 1;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-shipped {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .status-processing {
+      background-color: #FFC107;
+      color: black;
+    }
+
+    .status-delivered {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .status-transit {
+      background-color: #FF9800;
+      color: white;
+    }
+
+    .status-pending {
+      background-color: #9E9E9E;
+      color: white;
+    }
+
+    .flip-instruction {
+      font-size: 13px;
+      margin-top: 20px;
+      opacity: 0.9;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .product-image {
+      height: 80px;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-bottom: 15px;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Your video background code added exactly as requested -->
+  <video id="background-video" autoplay loop muted>
+    <source src="poo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="scene">
+    <div class="board" id="orders-board">
+      <!-- Cards will be generated here -->
+    </div>
+  </div>
+
+  <script>
+    // Enhanced order data with product images
+    const orders = [
+      {
+        id: 1001,
+        product: "Premium Wireless Headphones",
+        status: "Shipped",
+        date: "May 15, 2023",
+        amount: "$99.99",
+        tracking: "UPS-123456789",
+        customer: "John D.",
+        address: "123 Main St, New York, NY 10001",
+        email: "john.d@example.com",
+        phone: "(555) 123-4567",
+        image: "https://cdn-icons-png.flaticon.com/512/2942/2942057.png"
+      },
+      {
+        id: 1002,
+        product: "Luxury Smart Watch",
+        status: "Processing",
+        date: "May 18, 2023",
+        amount: "$199.99",
+        tracking: "Preparing for shipment",
+        customer: "Sarah M.",
+        address: "456 Oak Ave, Los Angeles, CA 90001",
+        email: "sarah.m@example.com",
+        phone: "(555) 987-6543",
+        image: "https://cdn-icons-png.flaticon.com/512/599/599520.png"
+      },
+      {
+        id: 1003,
+        product: "Bluetooth Speaker",
+        status: "Delivered",
+        date: "May 10, 2023",
+        amount: "$59.99",
+        tracking: "FEDEX-987654321",
+        customer: "Mike T.",
+        address: "789 Pine Rd, Austin, TX 73301",
+        email: "mike.t@example.com",
+        phone: "(555) 456-7890",
+        image: "https://cdn-icons-png.flaticon.com/512/3659/3659898.png"
+      },
+      {
+        id: 1004,
+        product: "Professional Camera",
+        status: "In Transit",
+        date: "May 22, 2023",
+        amount: "$599.99",
+        tracking: "DHL-456789123",
+        customer: "Emma L.",
+        address: "321 Elm Blvd, Miami, FL 33101",
+        email: "emma.l@example.com",
+        phone: "(555) 789-0123",
+        image: "https://cdn-icons-png.flaticon.com/512/2910/2910384.png"
+      },
+      {
+        id: 1005,
+        product: "Gaming Laptop",
+        status: "Pending",
+        date: "May 25, 2023",
+        amount: "$1299.99",
+        tracking: "Awaiting confirmation",
+        customer: "David K.",
+        address: "654 Maple Dr, Seattle, WA 98101",
+        email: "david.k@example.com",
+        phone: "(555) 234-5678",
+        image: "https://cdn-icons-png.flaticon.com/512/651/651071.png"
+      },
+      {
+        id: 1006,
+        product: "Wireless Earbuds",
+        status: "Shipped",
+        date: "May 28, 2023",
+        amount: "$79.99",
+        tracking: "USPS-789123456",
+        customer: "Lisa P.",
+        address: "987 Cedar Ln, Chicago, IL 60601",
+        email: "lisa.p@example.com",
+        phone: "(555) 345-6789",
+        image: "https://cdn-icons-png.flaticon.com/512/2933/2933245.png"
+      }
+    ];
+
+    const board = document.getElementById('orders-board');
+
+    // Clear any existing content
+    board.innerHTML = '';
+
+    orders.forEach((order) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      
+      // Determine status class
+      let statusClass = '';
+      if (order.status.includes('Shipped')) statusClass = 'status-shipped';
+      else if (order.status.includes('Processing')) statusClass = 'status-processing';
+      else if (order.status.includes('Delivered')) statusClass = 'status-delivered';
+      else if (order.status.includes('Transit')) statusClass = 'status-transit';
+      else if (order.status.includes('Pending')) statusClass = 'status-pending';
+      
+      card.innerHTML = `
+        <div class="card-face card-back">
+          <div class="order-header">
+            <div class="order-title">ORDER #${order.id}</div>
+            <div class="order-id">${order.product}</div>
+          </div>
+          <div class="flip-instruction">Click to view details</div>
+        </div>
+        <div class="card-face card-front">
+          <div class="product-image" style="background-image: url('${order.image}')"></div>
+          <div class="order-details">
+            <div class="detail-row">
+              <div class="detail-label">Status:</div>
+              <div class="detail-value"><span class="status ${statusClass}">${order.status}</span></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Customer:</div>
+              <div class="detail-value">${order.customer}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Date:</div>
+              <div class="detail-value">${order.date}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Amount:</div>
+              <div class="detail-value">${order.amount}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Tracking:</div>
+              <div class="detail-value">${order.tracking}</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Contact:</div>
+            <div class="detail-value">${order.phone}<br>${order.email}</div>
+          </div>
+        </div>
+      `;
+      
+      card.addEventListener('click', function() {
+        this.classList.toggle('is-flipped');
+      });
+      
+      board.appendChild(card);
+    });
+  </script>
+</body>
+</html>
